@@ -1,6 +1,6 @@
-const { worker } = require("bullmq");
+const { Worker } = require("bullmq");
 
-const emaiWorker = new worker("email-queue",
+const emaiWorker = new Worker("email-queue",
 
     async (job) => {
         console.log("processing job", job.name);
@@ -9,6 +9,7 @@ const emaiWorker = new worker("email-queue",
         console.log("body: ", job.data.body);
 
     }
+
     ,
     {
         connection: {

@@ -1,4 +1,4 @@
-const emailQueue = require("./queue/email.queue");
+const emailQueue = require("../queue/email.queue");
 
 async function createJob(req, res) {
     try {

@@ -3,7 +3,7 @@ const express = require("express");
 
 const app = express();
 
-const jobRoutes = require("./routes/job.routes");
+const jobRoutes = require("./routes/job.route");
 
 // Middleware to read JSON data
 app.use(express.json());
