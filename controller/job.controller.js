@@ -7,8 +7,16 @@ async function createJob(req, res) {
         const job = await emailQueue.add("welcome-email", {
             to,
             subject,
-            body
-        });
+            body,
+
+        },
+            {
+                attempts: 3,
+                backoff: {
+                    type: "fixed",
+                    delay: 5000
+                }
+            });
 
         res.status(201).json({
             message: "job added successfully",
@@ -40,7 +48,8 @@ async function getJobStatus(req, res) {
             jobId: job.id,
             name: job.name,
             data: job.data,
-            status: state
+            status: state,
+            attemptsMade: job.attemptsMade
         });
 
     } catch (err) {
@@ -54,7 +63,34 @@ async function getJobStatus(req, res) {
 
 }
 
+async function getfailedJobs(req, res) {
+    try {
+        const failed_job = await emailQueue.getFailed();
+
+        const jobs = failed_job.map((job) => ({
+            jobId: job.id,
+            name: job.name,
+            data: job.data,
+            attemptsMade: job.attemptsMade,
+            failedReason: job.failedReason
+
+
+        }));
+
+        res.status(200).json({
+            count: jobs.length,
+            jobs
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: "failed to fetch the details",
+            error: err.message
+        });
+    }
+}
+
 module.exports = {
     createJob,
-    getJobStatus
+    getJobStatus,
+    getfailedJobs
 }
